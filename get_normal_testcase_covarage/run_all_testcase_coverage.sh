@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# 输入
+# 输入 默认两个值都是sha
 git_sha="${1:-ec52dee4274fcf994d358c8b0f883eec8f67e041}"
 git_version="${2:-FDS6.7.9}"
 
@@ -25,8 +25,26 @@ total_cases=$(echo "$testcase_list" | wc -l)
 count=0
 
 # 设置起始和终止参数
-start=1966
-end=2528
+start=0
+end=999999
+
+# 读取二次筛选结果
+# 设定目录路径
+directory='/home/my/fds_all_examples/get_normal_testcase_covarage/二次筛选结果'
+# 切换到指定的目录
+cd "$directory"
+
+echo "git_sha: $git_sha"
+testcase_list_v2=""
+# 遍历目录中的所有.txt文件
+for file in *.txt; do
+    # 检查文件名是否包含git_hash
+    if [[ $file == *"$git_sha"* ]]; then
+        testcase_list_v2="$testcase_list_v2 $(cat "$file")"
+        # 仅为展示目的，打印数组内容
+    fi
+done
+cd "$SCRIPT_DIR"
 
 echo "总共有 $total_cases 个测试用例。"
 echo -ne '测试用例运行进度: [--------------------] (0%, 0/'$total_cases')\r'
@@ -58,14 +76,8 @@ for testcase in $testcase_list; do
         echo "跳过 $count"
         continue
     fi
-    # 读取用例列表，如果在列表中，则运行。否则跳过
-    # 读取
-
-
-
 
     # 删除历史中间文件
-
     cd /home/my/fds/
     git clean -f -d /home/my/fds/Verification
     git clean -f -d /home/my/fds/Validation
@@ -74,6 +86,14 @@ for testcase in $testcase_list; do
     # 获取testcase名称
     testcase_name=$(basename $testcase)
     testcase_name=${testcase_name%.*}
+
+     # 如果在二次筛选列表中，则运行。否则跳过
+    if [[ $testcase_list_v2 != *"$testcase_name"* ]]; then
+        echo "小版本跳过 $testcase_name"
+        continue
+    else
+        echo "小版本执行 $testcase_name"
+    fi
 
     # 创建保存覆盖率的文件夹
     testcase_coverage_save_path="/home/my/fds_coverage/$git_version/$testcase_name"
@@ -110,4 +130,4 @@ done
 
 echo -e "\n所有测试用例运行完毕。"
 
-aAA# End of script.
+# End of script.

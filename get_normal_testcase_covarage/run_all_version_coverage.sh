@@ -15,7 +15,7 @@ exec &> >(tee -a $log_path)
 # 循环所有版本
 # 1. 获取版本列表
 git_hashes=(
-    "ec52dee4274fcf994d358c8b0f883eec8f67e041"
+    "3e0ad7eb35febbd073a3a298d21edaaa645870a9"
     # "cfc502f85437bbfb35bd5ac8b19b86eeea736696"
     # "bac6600d09761ca9c858ad5e32f5276f4ba3f611"
     # "49d14aa4a1d28517e90013a3bf150f78b4aa962d"
